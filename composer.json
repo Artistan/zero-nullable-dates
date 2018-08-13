@@ -1,0 +1,46 @@
+{
+    "name": "artistan/zero-nullable-dates",
+    "description": "Allows having zero date models in laravel",
+    "type": "library",
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "Charles Peterson",
+            "email": "artistan@gmail.com"
+        }
+    ],
+    "keywords": [
+        "zero",
+        "dates",
+        "model",
+        "laravel",
+        "nullable"
+    ],
+    "require": {
+        "php": ">=7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7|^6.2",
+        "orchestra/testbench": "3.6.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Artistan\\ZeroNullDates\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Artistan\\ZeroNullDates\\Test\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Artistan\\ZeroNullDates\\Provider"
+            ],
+            "aliases": {
+                "ZeroNullDates": "Artistan\\ZeroNullDates\\Facade"
+            }
+        }
+    },
+}
