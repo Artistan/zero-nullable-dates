@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Database;
+namespace Artistan\ZeroNullDates\Tests\Database;
 
-use Tests\App\User;
-use Tests\TestCase;
+use Artistan\ZeroNullDates\Tests\TestCase;
+use Artistan\ZeroNullDates\Tests\Database\ZeroNullableUser as TestUser;
 
 class ModelTest extends TestCase
 {
@@ -26,7 +26,7 @@ class ModelTest extends TestCase
             'key_casting',
             'key_dates',
         ];
-        $unique_callback_set = User::unique_sets($change_settings_methods);
+        $unique_callback_set = TestUser::unique_sets($change_settings_methods);
         foreach ($unique_callback_set as $set_of_callbacks) {
             // call the callbacks
             $this->current_config_set = $set_of_callbacks;
@@ -39,21 +39,22 @@ class ModelTest extends TestCase
 
     public function nullable()
     {
-        foreach (User::$nullable as $key) {
+        foreach (TestUser::$nullable as $key) {
             $this->checkDateAssertions($key, null);
         }
     }
 
     public function zeroDate()
     {
-        foreach (User::$zero_date as $key) {
+        foreach (TestUser::$zero_date as $key) {
             $this->checkDateAssertions($key, '0000-00-00');
         }
     }
 
     public function checkDateAssertions($key, $null_or_zeros)
     {
-        $user = User::where($key, $null_or_zeros)->limit(1)->first();
+        /** @var TestUser $user */
+        $user = TestUser::where($key, $null_or_zeros)->limit(1)->first();
         $this->add_callbacks_to_user($key, $user);
         $array = $user->toArray();
         $zeroDateArray = $array[$key];
@@ -74,8 +75,8 @@ class ModelTest extends TestCase
     {
         $verbose_value = var_export($newValue, true);
 
-        /** @var \App\User $user */
-        $user = factory(User::class)->make();
+        /** @var TestUser $user */
+        $user = factory(TestUser::class)->make();
         // test setting the zero date attribute to null and saving it.
         $user->$key = $newValue;
         $saved = $user->save();
@@ -83,12 +84,12 @@ class ModelTest extends TestCase
 
         if (is_null($value)) {
             // test that it saved in the db as NULL, since that is what is expected!!!
-            $user = User::find($user->id);
+            $user = TestUser::find($user->id);
             $this->assertNull($user->getOriginal($key),
                 "Value of user->->getOriginal({$key}) did not save as null when set to {$verbose_value}".var_export($user,true));
         } else {
             // test that it saved in the db as a zero date, since that is what is expected!!!
-            $user = User::find($user->id);
+            $user = TestUser::find($user->id);
             $this->assertStringStartsWith('0000-00-00', $user->getOriginal($key),
                 "Value of user->->getOriginal({$key}) did not save as zero date when set to {$verbose_value}".var_export($user,true));
         }

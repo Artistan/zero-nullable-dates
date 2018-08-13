@@ -12,7 +12,7 @@ class Provider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadMigrationsFrom(__DIR__.'/path/to/migrations');
+
     }
     /**
      * Register the application services.

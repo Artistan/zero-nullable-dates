@@ -1,6 +1,50 @@
 
 
 
+add ZNDTrait and a couple arrays to allow for zero and nullable dates
+
+this is useful for old databases that do not have NO_ZERO_IN_DATE, NO_ZERO_DATE
+so they may have 0000-00-00 type dates.
+
+```php
+use Artistan\ZeroNullDates\ZNDTrait;
+
+class ZeroNullableUser extends Authenticatable
+{
+    use Notifiable;
+    use ZNDTrait;  
+    
+    /**
+     * The attributes that are zero-dated
+     *
+     * @var array
+     */
+    public static $zero_date = [
+        'created_date_time',
+        'created_date_time_zoned',
+        'created_date',
+    ];
+
+    /**
+     * The attributes that are nullable dates
+     *
+     * @var array
+     */
+    public static $nullable = [
+        'created_date_time_null',
+        'created_date_time_zoned_null',
+        'created_date_null',
+        'created_at',
+        'updated_at',
+    ];
+}
+```
+
+
+
+
+
+notes on current laravel functionality dealing with toArray, attribute accessors, and dates
 
 #toArray vs accessor
 
@@ -58,5 +102,12 @@ sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_A
 
 ### notes on dev package setup 
 
+- example package
 https://medium.com/@lasselehtinen/getting-started-on-laravel-package-development-a62110c58ba1
+- package setup
 https://stackoverflow.com/a/44023017/372215
+- test setup
+https://github.com/orchestral/testbench
+- .env file in tests directory for configuration of your tests
+- `ln -s vendor/laravel/laravel/config` in tests directory to allow access to config files
+    - laravel does not have a seperate "config" path from the base path, damn it.
