@@ -1,3 +1,7 @@
+
+
+
+
 #toArray vs accessor
 
 ## if you use $model->{camel_key} (getAttributeValue), then it will
@@ -49,3 +53,10 @@ SELECT @@sql_mode
 ```conf
 sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
 ```
+
+
+
+### notes on dev package setup 
+
+https://medium.com/@lasselehtinen/getting-started-on-laravel-package-development-a62110c58ba1
+https://stackoverflow.com/a/44023017/372215
