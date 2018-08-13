@@ -2,7 +2,7 @@
     "name": "artistan/zero-nullable-dates",
     "description": "Allows having zero date models in laravel",
     "homepage": "https://github.com/Artistan/zero-nullable-dates",
-    "license": "GPLv3",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Charles Peterson",
