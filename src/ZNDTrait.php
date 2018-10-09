@@ -46,6 +46,11 @@ trait ZNDTrait {
             return null;
         }
 
+		// handle date attributes that are still empty (new model)...
+		if (empty($this->attributes[$key]) && in_array($key, array_merge($this->dates))) {
+			return null;
+		}
+
         return parent::getAttribute($key);
     }
 
