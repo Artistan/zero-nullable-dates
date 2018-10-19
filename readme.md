@@ -1,28 +1,59 @@
 
+## ZNDCarbon
+Laravel Models with nullable carbon dates,
+this also allow for returning a date object. When the value is null/zeros that will format to ''.
+
+### example
+```php
+
+	// my_date on new model is null...
+	// this will just be null value
+	// so you can use the null coalesce operator to set a string
+	
+	echo $user->my_date->format('Y-m-d H:i:s') ?? 'Set a Date';
+	 
+
+```
 
 
-add ZNDTrait and a couple arrays to allow for zero and nullable dates
-
-this is useful for old databases that do not have NO_ZERO_IN_DATE, NO_ZERO_DATE
+This is useful for old databases that do not have NO_ZERO_IN_DATE, NO_ZERO_DATE
 so they may have 0000-00-00 type dates.
+
+Add ZNDTrait and a couple arrays to define nullable dates to allow for zero and nullable dates.
+  
+You may also set null_all_dates on your model to set all to nullable without the arrays  
+
+Ultimately you can just set them all to `$nullable`, the addition of `$zero_datetime` and `$zero_date` are for testing that the database is updating as expected.
+
 
 ```php
 use Artistan\ZeroNullDates\ZNDTrait;
 
+/**
+ *  @see tests/Database/ZeroNullableUser.php
+ */
 class ZeroNullableUser extends Authenticatable
 {
     use Notifiable;
     use ZNDTrait;  
     
     /**
-     * The attributes that are zero-dated
+     * The attributes that are zero-datetimes
+     *
+     * @var array
+     */
+    public static $zero_datetime = [
+        'created_date',
+    ];
+
+    /**
+     * The attributes that are zero-dates
      *
      * @var array
      */
     public static $zero_date = [
         'created_date_time',
         'created_date_time_zoned',
-        'created_date',
     ];
 
     /**
@@ -40,7 +71,20 @@ class ZeroNullableUser extends Authenticatable
 }
 ```
 
+The unit tests are dynamic and test 288 assertions 
 
+ test for all combinations of what things are set for date columns....
+ all combinations of mutators, castings, and dates
+ 
+| mutator | cast | date |
+|---------|------|------|
+|    x    |      |      |
+|         |  x   |      |
+|         |      |  x   |
+|    x    |  x   |      |
+|    x    |      |  x   |
+|         |  x   |  x   |
+|    x    |  x   |  x   |
 
 
 
@@ -60,7 +104,7 @@ notes on current laravel functionality dealing with toArray, attribute accessors
     - finaly make a date (carbon) object from it `IF NOT NULL` RETURN IT HERE
 - return value
  
-note: the appends variables ARE mutate attributes that do not exist in the model attributes...
+note: the appends variables ARE mutated attributes that do not exist in the model attributes...
 
 ## if you get attributes via $model->toArray then it will
 - addDateAttributesToArray via getArrayableAttributes
@@ -84,7 +128,13 @@ these are both mutators and accessors, or mutates in and out
 ## data analysis
 
 when date keys are set for dates that allow ZERO dates the formatting for 000-00-00 or variations of that fail.
-`-0001-11-30 00:00:00` is the default result...
+`-0001-11-30 00:00:00` is the default result...  
+
+## ZNDCarbon
+using NULL as the data point when it is a zero nullable date  
+```
+private static $empty_date = ['0', 0, false, '', '0000-00-00', '0000-00-00 00:00:00'];
+```
 
 ### mysql mode
 `mysql`
@@ -92,7 +142,7 @@ when date keys are set for dates that allow ZERO dates the formatting for 000-00
 SELECT @@sql_mode
 ```
 
-### homestead box
+### homestead box setup for testing
 `vim /etc/mysql/mysql.conf.d/mysqld.cnf`
 ```conf
 sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"

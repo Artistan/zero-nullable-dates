@@ -69,7 +69,8 @@ trait DynamicModelMethods
     {
         $nullable = static::$nullable??[];
         $zero_date = static::$zero_date??[];
-        return array_merge($nullable,$zero_date);
+		$zero_datetime = static::$zero_datetime??[];
+        return array_merge($nullable,$zero_date,$zero_datetime);
     }
 
     /**

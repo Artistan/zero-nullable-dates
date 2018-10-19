@@ -60,10 +60,18 @@ class ZeroNullableUser extends Authenticatable
      * @var array
      */
     public static $zero_date = [
-        'created_date_time',
-        'created_date_time_zoned',
         'created_date',
     ];
+
+	/**
+	 * The attributes that are zero-datetimed
+	 *
+	 * @var array
+	 */
+	public static $zero_datetime = [
+		'created_date_time',
+		'created_date_time_zoned'
+	];
 
     /**
      * The attributes that are nullable dates

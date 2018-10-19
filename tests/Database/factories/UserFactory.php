@@ -14,6 +14,7 @@ use Faker\Generator as Faker;
 |
 */
 
+/** @var Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(User::class, function (Faker $faker) {
     $base_attributes = [
         'name' => $faker->name,
@@ -34,6 +35,12 @@ foreach (User::$zero_date as $key) {
     $factory->state(User::class, $key, [
         $key => '0000-00-00',
     ]);
+}
+
+foreach (User::$zero_datetime as $key) {
+	$factory->state(User::class, $key, [
+		$key => '0000-00-00 00:00:00',
+	]);
 }
 
 foreach (User::$nullable as $key) {

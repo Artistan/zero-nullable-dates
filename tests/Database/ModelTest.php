@@ -21,6 +21,11 @@ class ModelTest extends TestCase
     //|    x    |  x   |  x   |
     public function testVariations()
     {
+    	//$user = TestUser::find(1)->first();
+    	//dump($user);
+    	//echo $user->created_date_time;
+		//dump($user);
+		//exit;
         $change_settings_methods = [
             'key_mutator',
             'key_casting',
@@ -30,15 +35,18 @@ class ModelTest extends TestCase
         foreach ($unique_callback_set as $set_of_callbacks) {
             // call the callbacks
             $this->current_config_set = $set_of_callbacks;
+			// zeroDate
+			$this->zeroDate();
+			// zeroDateTime
+			$this->zeroDateTime();
             // nullable
             $this->nullable();
-            // zeroDate
-            $this->zeroDate();
         }
     }
 
     public function nullable()
     {
+		echo "\n\n***************************************\n\nnullable\n";
         foreach (TestUser::$nullable as $key) {
             $this->checkDateAssertions($key, null);
         }
@@ -46,10 +54,19 @@ class ModelTest extends TestCase
 
     public function zeroDate()
     {
+		echo "\n\n***************************************\n\nzeroDate\n";
         foreach (TestUser::$zero_date as $key) {
             $this->checkDateAssertions($key, '0000-00-00');
         }
     }
+
+	public function zeroDateTime()
+	{
+		echo "\n\n***************************************\n\nzeroDate\n";
+		foreach (TestUser::$zero_datetime as $key) {
+			$this->checkDateAssertions($key, '0000-00-00 00:00:00');
+		}
+	}
 
     public function checkDateAssertions($key, $null_or_zeros)
     {
@@ -58,10 +75,11 @@ class ModelTest extends TestCase
         $this->add_callbacks_to_user($key, $user);
         $array = $user->toArray();
         $zeroDateArray = $array[$key];
-        $zeroDateAttribute = $user->{$key};
+        $zeroDateAttribute = $user->{$key}->format('Y-m-d H:i:s');
+		$this->assertNull($zeroDateAttribute, "Value of user->{$key} {$zeroDateAttribute}");
+		$this->assertNull($zeroDateArray, "Value of user_array[{$key}] {$zeroDateArray}");
 
-        $this->assertNull($zeroDateAttribute, "Value of user->{$key} {$zeroDateAttribute}");
-        $this->assertNull($zeroDateArray, "Value of user_array[{$key}] {$zeroDateArray}");
+		// they should be equal to each other.
         $this->assertEquals($zeroDateAttribute, $zeroDateArray,
             "Value of user->{$key} not equal to user_array[{$key}]");
 
@@ -90,7 +108,7 @@ class ModelTest extends TestCase
         } else {
             // test that it saved in the db as a zero date, since that is what is expected!!!
             $user = TestUser::find($user->id);
-            $this->assertStringStartsWith('0000-00-00', $user->getOriginal($key),
+            $this->assertEquals($value, $user->getOriginal($key),
                 "Value of user->->getOriginal({$key}) did not save as zero date when set to {$verbose_value}".var_export($user,true));
         }
     }
@@ -98,7 +116,6 @@ class ModelTest extends TestCase
     public function listenSql()
     {
         \DB::listen(function (...$args) {
-            dump('testSql');
             foreach ($args as $v) {
                 foreach ($v as $b) {
                     if (gettype($b) != 'object') {
@@ -113,6 +130,7 @@ class ModelTest extends TestCase
 
     public function add_callbacks_to_user($key, &$user)
     {
+    	echo 'callbacks :: '.json_encode($this->current_config_set)."\n\n";
         foreach ($this->current_config_set as $callable) {
             $user->$callable($key);
         }
