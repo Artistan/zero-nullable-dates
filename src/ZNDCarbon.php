@@ -60,6 +60,12 @@ class ZNDCarbon extends Carbon
 	 */
 	public static function date_value_is_empty($value)
 	{
+		if($value instanceof ZNDCarbon) {
+			return $value->is_date;
+		}
+		if($value instanceof Carbon || $value instanceof \DateTime || $value instanceof \DateTimeInterface) {
+			return false;
+		}
 		return in_array($value, self::$empty_date);
 	}
 
@@ -69,6 +75,12 @@ class ZNDCarbon extends Carbon
 	 */
 	public static function date_value_not_empty($value)
 	{
+		if($value instanceof ZNDCarbon) {
+			return !$value->is_date;
+		}
+		if($value instanceof Carbon || $value instanceof \DateTime || $value instanceof \DateTimeInterface) {
+			return true;
+		}
 		return ! in_array($value, self::$empty_date);
 	}
 
