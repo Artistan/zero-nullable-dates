@@ -73,11 +73,12 @@ trait ZNDTrait
 	 */
 	public function setAttribute($key, $value)
 	{
-		// if zero, or nullable date...
-		if ($this->is_nullable($key)) {
-			return new ZNDCarbon($value);
+		// if nullable and empty (zero || null)...
+		if ($this->is_nullable($key) and empty($value)) {
+			// set to a nullable carbon date if it is a nullable attribute
+			$value = new ZNDCarbon($value);
 		}
-
+		
 		return parent::setAttribute($key, $value);
 	}
 
